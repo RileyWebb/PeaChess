@@ -2,9 +2,6 @@
 	path = ext/sdl
 	url = https://github.com/libsdl-org/SDL
 	branch = SDL2
-[submodule "ext/cglm"]
-	path = ext/cglm
-	url = https://github.com/recp/cglm
 [submodule "ext/stb"]
 	path = ext/stb
 	url = https://github.com/nothings/stb

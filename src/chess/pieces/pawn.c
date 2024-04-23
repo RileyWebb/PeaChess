@@ -1,0 +1,1 @@
+uint64_t pawn_attacks[2][64];

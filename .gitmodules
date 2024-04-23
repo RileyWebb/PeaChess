@@ -1,0 +1,22 @@
+[submodule "ext/sdl"]
+	path = ext/sdl
+	url = https://github.com/libsdl-org/SDL
+	branch = SDL2
+[submodule "ext/cglm"]
+	path = ext/cglm
+	url = https://github.com/recp/cglm
+[submodule "ext/stb"]
+	path = ext/stb
+	url = https://github.com/nothings/stb
+[submodule "ext/cimgui"]
+	path = ext/cimgui
+	url = https://github.com/cimgui/cimgui
+[submodule "ext/cimplot"]
+	path = ext/cimplot
+	url = https://github.com/cimgui/cimplot
+[submodule "ext/glew"]
+	path = ext/glew
+	url = https://github.com/Perlmint/glew-cmake
+[submodule "ext/uv"]
+	path = ext/uv
+	url = https://github.com/libuv/libuv

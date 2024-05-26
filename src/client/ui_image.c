@@ -4,7 +4,7 @@
 
 #include "debug.h"
 
-#include "client/ui.h"
+#include "ui/ui.h"
 
 unsigned int ui_image_wbishop;
 unsigned int ui_image_wking;
@@ -20,15 +20,13 @@ unsigned int ui_image_bpawn;
 unsigned int ui_image_bqueen;
 unsigned int ui_image_brook;
 
-/*
-unsigned int UI_ImageFromPiece(piece_t piece) 
+
+unsigned int UI_ImageFromPiece(piece_type type, piece_color color) 
 {
-    if (!piece)
+    if (!type)
         return 0;
 
-    piece_color color = PieceGetColor(piece);
-
-    switch (PieceGetType(piece))
+    switch (type)
     {
         case PIECE_TYPE_BISHOP:
             if (color == PIECE_COLOR_WHITE)
@@ -64,7 +62,7 @@ unsigned int UI_ImageFromPiece(piece_t piece)
 
     return 0;
 }
-*/
+
 void UI_ImageLoadPieces() 
 {
     ui_image_wbishop = UI_ImageLoad("data/white_bishop.png");

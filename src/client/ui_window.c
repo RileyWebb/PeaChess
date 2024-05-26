@@ -1,11 +1,12 @@
 #include <stdlib.h>
 
-#include "client/client.h"
+#include "debug.h"
+
+#include "ui/ui.h"
 
 SDL_Window *window;
-unsigned int window_width, window_height;
 
-void C_WindowInit()
+void UI_WindowInit()
 {
     SDL_Init(SDL_INIT_EVERYTHING);// | SDL_INIT_EVENTS);
 	window = SDL_CreateWindow(
@@ -18,25 +19,25 @@ void C_WindowInit()
     SDL_RaiseWindow(window);
 }
 
-void C_WindowProcessEvents()
+void UI_WindowProcessEvents()
 {
 	SDL_Event event;
 
-	while (SDL_PollEvent(&event)) {
-
+	while (SDL_PollEvent(&event)) 
+    {
         ImGui_ImplSDL2_ProcessEvent(&event);
 
         switch (event.type) 
         {
             case SDL_QUIT:
-                close = 1;
+                running = 0;
                 break;
             case SDL_WINDOWEVENT:
                 switch (event.window.event)
                 {
                     case SDL_WINDOWEVENT_RESIZED:
                     case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        SDL_GetWindowSize(window, window_width, window_height);
+                        //SDL_GetWindowSize(window, window_width, window_height);
                         break;
                 }
                 break;

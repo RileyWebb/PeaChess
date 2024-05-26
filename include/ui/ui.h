@@ -23,9 +23,9 @@ extern SDL_Window *window;
 
 extern unsigned int window_width, window_height;
 
-extern int close;
+extern int running;
 
-void UI_WindowCreate();
+void UI_WindowInit();
 void UI_WindowProcessEvents();
 
 // ui_renderer
@@ -50,12 +50,12 @@ extern unsigned int ui_image_bpawn;
 extern unsigned int ui_image_bqueen;
 extern unsigned int ui_image_brook;
 
-unsigned int UI_ImageFromType(piece_t *piece);
+unsigned int UI_ImageFromPiece(piece_type type, piece_color color);
 void UI_ImageLoadPieces();
 unsigned int UI_ImageLoad(char *filename);
 
 // ui_board
-void UI_DrawBoard(ImVec2 boardsize);
+void UI_DrawBoard(game_t *game, ImVec2 boardsize);
 
 // ui_svg
 typedef struct ui_svg_path_s

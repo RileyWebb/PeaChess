@@ -16,18 +16,20 @@ if (WIN32)
 endif()
 
 file(GLOB GENERAL_SOURCES src/*.c)
-file(GLOB CHESS_SOURCES src/chess/*.c)
-file(GLOB UI_SOURCES src/ui/*.c)
+file(GLOB CHESS_SOURCES src/peachess/*.c)
+file(GLOB CLIENT_SOURCES src/client/*.c)
 file(GLOB SERVER_SOURCES src/server/*.c)
 
 file(GLOB_RECURSE CLIENT_SOURCES src/client/*.c)
 
-add_executable(client ${GENERAL_SOURCES} ${CHESS_SOURCES} ${SERVER_SOURCES} ${CLIENT_SOURCES})
+add_library(libpeachess ${CHESS_SOURCES})
 
-target_link_libraries(client PRIVATE ${PLATFORM_LIBS} uv SDL2main libglew_static stb cimgui cimplot)
-target_link_libraries(client PUBLIC SDL2)
+add_executable(peachess ${GENERAL_SOURCES} ${CHESS_SOURCES} ${SERVER_SOURCES} ${CLIENT_SOURCES})
 
-target_compile_options(client PRIVATE
+target_link_libraries(peachess PRIVATE ${PLATFORM_LIBS} uv SDL2main libglew_static stb cimgui cimplot)
+target_link_libraries(peachess PUBLIC SDL2)
+
+target_compile_options(peachess PRIVATE
         $<$<CONFIG:Debug>:
         #-pedantic
         #-Wall
@@ -52,4 +54,4 @@ add_custom_target(copy_data
         ${CMAKE_CURRENT_SOURCE_DIR}/data/
         ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/data/)
 
-add_dependencies(client copy_data copy_info)
+add_dependencies(peachess copy_data copy_info)

@@ -7,3 +7,5 @@ typedef struct client_s
     } type; 
 } client_t;
 
+//SDL_Window *window;
+//unsigned int window_width, window_height;

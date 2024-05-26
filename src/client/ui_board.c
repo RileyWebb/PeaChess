@@ -1,14 +1,18 @@
-#include "client/ui.h"
+#include "debug.h"
+
+#include "ui/ui.h"
 
 void UI_DrawArrow() 
 {
 
 }
 
-void UI_DrawBoard(ImVec2 boardsize)
+int selected = -1;
+
+void UI_DrawBoard(game_t *game, ImVec2 boardsize)
 {
-    ImVec2 cellsize = (ImVec2){boardsize.x / CHESS_BOARDSIZE,
-                            boardsize.y / CHESS_BOARDSIZE};
+    ImVec2 cellsize = (ImVec2){boardsize.x / BOARDSIZE,
+                            boardsize.y / BOARDSIZE};
 
 	static ImGuiTableFlags flags = 
 		ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX | 
@@ -20,7 +24,7 @@ void UI_DrawBoard(ImVec2 boardsize)
 		//ImGuiTableFlags_BordersH | ImGuiTableFlags_;
 	igBeginTable("Board", 8, flags, boardsize, 0);
 
-	for (size_t i = 0; i < CHESS_BOARDSIZE; i++)
+	for (size_t i = 0; i < BOARDSIZE; i++)
 		igTableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, cellsize.x, i);
 
 	igPushStyleColor_Vec4(ImGuiCol_Button, (ImVec4){0, 0, 0, 0});
@@ -30,15 +34,15 @@ void UI_DrawBoard(ImVec2 boardsize)
     int hx = igTableGetHoveredColumn();
     int hy = igTableGetHoveredRow();
 
-	for (size_t y = 0; y < CHESS_BOARDSIZE; y++) 
+	for (size_t y = 0; y < BOARDSIZE; y++) 
     {
 		igTableNextRow(ImGuiTableRowFlags_None, cellsize.y);
 
-		for (size_t x = 0; x < CHESS_BOARDSIZE; x++) 
+		for (size_t x = 0; x < BOARDSIZE; x++) 
         {
 			ImU32 a;
 
-			if ((CHESS_BOARDSIZE * y + (x + y % 2)) % 2)
+			if ((BOARDSIZE * y + (x + y % 2)) % 2)
 				a = (255 << 0) | (206 << 8) | (158 << 16) | (255 << 24);
 			else
 				a = (209 << 0) | (139 << 8) | (71 << 16) | (255 << 24);
@@ -46,29 +50,48 @@ void UI_DrawBoard(ImVec2 boardsize)
             if (x == hx && y == hy)
                 a = (0 << 0) | (139 << 8) | (71 << 16) | (255 << 24);
 
-            //if ((current_game->valid[hx][hy] >> CHESS_BOARDSIZE * y + x) & 1)
-                //a = (0 << 0) | (255 << 8) | (255 << 16) | (255 << 24);
+            if (selected == (BOARDSIZE * y + x))
+                a = (0 << 0) | (255 << 8) | (255 << 16) | (255 << 24);
 
 
 			igTableSetColumnIndex(x);
-
 			igTableSetBgColor(ImGuiTableBgTarget_CellBg, a, x);
 
-	/*
-			if (PieceGetType(current_game->board.pieces[x][y]) != PIECE_TYPE_NONE)
+			int click = 0;
+
+			if (Chess_IsOccupied(&game->state, y * BOARDSIZE + x))
             {              
-				igImageButtonEx(
-					y * CHESS_BOARDSIZE + x + 1,
-					(ImTextureID)UI_ImageFromPiece(current_game->board.pieces[x][y]),
+				click = igImageButtonEx(
+					y * BOARDSIZE + x + 1,
+					(ImTextureID)UI_ImageFromPiece(GetPieceType(&game->state, y * BOARDSIZE + x), GetPieceColor(&game->state, y * BOARDSIZE + x)),
 					cellsize, (ImVec2){0.0f, 0.0f}, (ImVec2){1.0f, 1.0f},
-					(ImVec4){0, 0, 0, 0}, (ImVec4){255, 255, 255, 255}, 0);
-                    
-					ImGuiButtonFlags_FlattenChildren |
-						ImGuiButtonFlags_AlignTextBaseLine | 
-                        ImGuiButtonFlags_AllowOverlap);
-                        
-            }
-			*/
+					(ImVec4){0, 0, 0, 0}, (ImVec4){255, 255, 255, 255}, 0);                        
+            }else 
+			{
+				click = igImageButtonEx(
+					y * BOARDSIZE + x + 1,
+					(ImTextureID)0,
+					cellsize, (ImVec2){0.0f, 0.0f}, (ImVec2){1.0f, 1.0f},
+					(ImVec4){0, 0, 0, 0}, (ImVec4){255, 255, 255, 0}, 0);    
+			}
+
+			if (click)
+			{
+				if (selected == -1)
+				{
+					if (game->state.boards[OFFSET_OCCUPIED] & ((uint64_t)1 << (y * BOARDSIZE + x)))
+						selected = y * BOARDSIZE + x;
+				}
+				else 
+				{
+					if (selected != y * BOARDSIZE + x)
+						MovePiece(&game->state, selected, y * BOARDSIZE + x);
+					
+					selected = -1;
+				}
+			}
+
+			//
 
 			// igTextUnformatted(&c, &c+1);
 			// igSelectable_Bool("###text_1",b, ImGuiSelectableFlags_None,

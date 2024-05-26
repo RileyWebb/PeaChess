@@ -1,6 +1,5 @@
 add_subdirectory(sdl EXCLUDE_FROM_ALL)
 add_subdirectory(glew EXCLUDE_FROM_ALL)
-add_subdirectory(cglm EXCLUDE_FROM_ALL)
 add_subdirectory(uv EXCLUDE_FROM_ALL)
 
 #STB
@@ -29,7 +28,7 @@ target_include_directories(cimgui PRIVATE cimgui/imgui)
 target_include_directories(cimgui INTERFACE cimgui/generator/output/)
 target_compile_definitions(cimgui PUBLIC -DCIMGUI_USE_OPENGL3 -DCIMGUI_USE_SDL2)
 
-set(CIMGUI_LIBRARIES vulkan SDL2)
+set(CIMGUI_LIBRARIES SDL2)
 
 if (WIN32)
     target_compile_definitions(cimgui PUBLIC IMGUI_IMPL_API=extern\t\"C\"\t__declspec\(dllexport\))

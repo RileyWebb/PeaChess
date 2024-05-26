@@ -2,7 +2,7 @@
 
 #include "debug.h"
 
-#include "client/ui.h"
+#include "ui/ui.h"
 
 SDL_GLContext *gl_context;
 

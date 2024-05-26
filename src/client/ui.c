@@ -1,6 +1,6 @@
-#include "client/ui.h"
+#include "ui/ui.h"
 
-int close;
+int running;
 
 ImGuiIO *ioptr;
 ImGuiContext *ui_context;
@@ -10,16 +10,37 @@ game_t *current_game;
 
 void UI_Init()
 {
-	UI_WindowCreate();
+	UI_WindowInit();
 	UI_RendererCreate();
+
+
+	ImFontConfig *c = ImFontConfig_ImFontConfig();
+	c->GlyphMaxAdvanceX = 13;
+	c->GlyphMinAdvanceX = 13;
+	c->PixelSnapH = 1;
+	c->OversampleH = 1;
 
 	ui_context = igCreateContext(NULL);
 	plot_context = ImPlot_CreateContext();
 
-	ioptr = igGetIO();
 
+	ioptr = igGetIO();
+/*
+	ImFontAtlas *atlas = ioptr->Fonts;
+
+	const ImWchar *range = {0x0001,0xFFFF,0};
+	ImFont *font = ImFontAtlas_AddFontFromFileTTF(atlas, "/usr/share/fonts/roboto-mono/RobotoMono[wght].ttf", 13, c, range);
+
+	igImFontAtlasBuildSetupFont(atlas,font,font->ConfigData, 0,10);
+
+	//ImGui_ImplOpenGL3_DestroyFontsTexture();
+	ImGui_ImplOpenGL3_CreateFontsTexture();
+
+	ioptr->FontDefault = font;
+*/
 	ioptr->ConfigFlags |= ImGuiConfigFlags_None;
     ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	ioptr->ConfigWindowsMoveFromTitleBarOnly = 1;
 	// ioptr->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable
 	// Gamepad Controls
 	ioptr->ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Enable Docking
@@ -38,7 +59,8 @@ void UI_Init()
 void UI_Start(game_t *g)
 {
 	current_game = g;
-	while (!close)
+	running = 1;
+	while (running)
 		UI_Update();
 }
 
@@ -78,12 +100,8 @@ void UI_Update()
 		igBegin("Board", &a, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse); //ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | 
         //igPopStyleVar(5);
 
-		ImVec2 window_min;
-		ImVec2 window_max;
 		ImVec2 window_size;
 
-		//igGetWindowContentRegionMin(&window_min);
-		//igGetWindowContentRegionMax(&window_max);
 		// igGetItemRectSize(&window_size);
 		igGetContentRegionAvail(&window_size);
 
@@ -92,7 +110,7 @@ void UI_Update()
 		boardsize.y =
 			MIN(window_size.x, window_size.y);
 		//tab bar
-		UI_DrawBoard(boardsize);
+		UI_DrawBoard(current_game, boardsize);
 		igEnd();
 	}
 

@@ -30,17 +30,25 @@ typedef enum piece_type
     PIECE_TYPE_QUEEN    = 6,
 } piece_type;
 
+typedef enum piece_color
+{
+    PIECE_COLOR_WHITE     = 0,
+    PIECE_COLOR_BLACK     = 1,
+} piece_color;
+
 typedef enum 
 {
-    OFFSET_WHITE = 0,
-    OFFSET_BLACK = 1,
+    OFFSET_OCCUPIED = 0,
+
+    OFFSET_WHITE = 1,
+    OFFSET_BLACK = 2,
     
-    OFFSET_BISHOP = 2,
-    OFFSET_KING = 3,
-    OFFSET_KNIGHT = 4,
-    OFFSET_PAWN = 5,
-    OFFSET_QUEEN = 6,
-    OFFSET_ROOK = 7,
+    OFFSET_BISHOP = 3,
+    OFFSET_KING = 4,
+    OFFSET_KNIGHT = 5,
+    OFFSET_PAWN = 6,
+    OFFSET_QUEEN = 7,
+    OFFSET_ROOK = 8,
 } bitboard_offsets;
 
 typedef struct position_s 
@@ -59,19 +67,22 @@ typedef struct move_s
     uint8_t flags;
 } move_t;
 
-typedef struct board_s 
-{
-    uint16_t flags;
-
-    uint64_t pieces[6 * 2];
-} board_t;
-
 typedef struct player_s
 {
     
 } player_t;
 
-typedef struct game_s 
+typedef struct gamestate_s 
+{
+    uint8_t flags; //which players turn
+
+    uint64_t boards[1 + 2 + 6];
+
+    uint64_t moves[BOARDSIZE * BOARDSIZE];
+
+} gamestate_t;
+
+typedef struct gameinfo_s 
 {
     char *event;
     char *site;
@@ -96,17 +107,30 @@ typedef struct game_s
         CHESS_MODE_ICS,
         CHESS_MODE_OTB,
     } mode;
+} gameinfo_t;
 
-    //result
-    
+typedef struct game_s 
+{
     player_t white;
     player_t black;
 
-    board_t board;
-    valid_moves_t valid[CHESS_BOARDSIZE][CHESS_BOARDSIZE];
+    gameinfo_t info;
+
+    gamestate_t state;
 
     move_t *moves;
     size_t move_count;
 } game_t;
+
+static inline uint64_t C_IsOccupied(gamestate_t *state, uint_fast8_t index)
+{
+    return (state->boards[OFFSET_OCCUPIED] & ((uint64_t)1 << index));
+}
+piece_type GetPieceType(gamestate_t *state, uint_fast8_t index);
+piece_color GetPieceColor(gamestate_t *state, uint_fast8_t index);
+void MovePiece(gamestate_t *state, uint_fast8_t from, uint_fast8_t to);
+
+// fen
+gamestate_t FEN_LoadState(char *str);
 
 #endif

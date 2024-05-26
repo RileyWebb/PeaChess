@@ -3,6 +3,7 @@
 #include "chess.h"
 #include "debug.h"
 
+/*
 #include "pgn.h"
 
 void PGN_Load(game_t *game, char *src) 
@@ -23,7 +24,8 @@ void PGN_Load(game_t *game, char *src)
 
         char *value;
         size_t value_len = strchr(next, "\"") - next + 1;
-        /* code */
+        
     }
 
 }
+*/
